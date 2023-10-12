@@ -7,3 +7,5 @@
 *.user
 *.filters
 *.vcxproj
+/dz2/x64/Debug
+/x64/Debug
