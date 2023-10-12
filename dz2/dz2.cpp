@@ -23,6 +23,13 @@ private:
 	int offspring_probability;
 	int food_consumption;
 public:
+	People() {
+		this->gender = "NULL";
+		this->age = -1;
+		this->death_probability = -1;
+		this->offspring_probability = -1;
+		this->food_consumption = -1;
+	}
 	People(string gender, int age) {
 		this->gender = gender;
 		this->age = age;
@@ -107,6 +114,28 @@ vector<People> check_food(int& all_food, vector<People> peoples) {
 		new_peoples.erase(new_peoples.begin() + (rand() % new_peoples.size()));
 	all_food -= get_need_food(new_peoples);
 	return new_peoples;
+}
+
+
+vector<pair<People, People>> create_pairs(vector<People> peoples) {
+	vector<People> men, women;
+	vector<pair<People, People>> pairs;
+	for_each(peoples.begin(), peoples.end(),
+		[&men, &women](People people) {
+			if (people.get_gender() == "male")
+				men.push_back(people);
+			else
+				women.push_back(people);
+		});
+	size_t size = min(men.size(), women.size());
+	for (size_t i = 0; i < size; i++)
+		pairs.push_back(make_pair(men[i], women[i]));
+	return pairs;
+}
+
+
+vector<People> check_offspring(vector<People> peoples) {
+
 }
 
 
