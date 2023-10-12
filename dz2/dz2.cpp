@@ -4,6 +4,7 @@
 #include <random>
 #include <ctime>
 #include <algorithm>
+#include <iomanip>
 
 
 using namespace std;
@@ -52,16 +53,14 @@ public:
 	}
 
 	void update_probability() {
-		if (this->age < 10)
+		if (this->age <= 10)
 			this->death_probability = 0;
 		else if (this->age > 15)
 			this->death_probability = 100;
 		else
 			this->death_probability = CONST_DIE;
 
-		if (this->age < 1)
-			this->offspring_probability = 0;
-		else if (this->age > 13)
+		if (this->age <= 1 || this->age > 13)
 			this->offspring_probability = 0;
 		else
 			this->offspring_probability = CONST_BORN;
@@ -79,7 +78,7 @@ public:
 
 People create_people() {
 	string gender = ((rand() % 2) == 0 ? "male" : "female");
-	return People(gender, 1);
+	return People(gender, 0);
 }
 
 
@@ -143,9 +142,16 @@ vector<People> check_offspring(vector<People> peoples) {
 	vector<People> new_peoples = peoples;
 	vector<pair<People, People>> pairs = create_pairs(peoples);
 	for (size_t i = 0; i < pairs.size(); i++)
-		if ((rand() % 100) >= min(pairs[i].first.get_offspring_probability(), pairs[i].second.get_offspring_probability()))
+		if ((rand() % 100) < min(pairs[i].first.get_offspring_probability(), pairs[i].second.get_offspring_probability()))
 			new_peoples.push_back(create_people());
 	return new_peoples;
+}
+
+
+void check_conditions(int all_food, vector<People>& peoples) {
+	peoples = check_death(peoples);
+	peoples = check_food(all_food, peoples);
+	peoples = check_offspring(peoples);
 }
 
 
@@ -157,12 +163,23 @@ void increase(vector<People>& peoples) {
 }
 
 
+void read_data(int& n, int& m) {
+	cout << "Enter food reserve (n):\n";
+	cin >> n;
+	cout << "Enter food purchase (m):\n";
+	cin >> m;
+}
+
+
 void show_information(int year, int all_food, vector<People> peoples) {
-	cout << "Year = " << year << endl;
+	cout << endl << "Year = " << year << endl;
 	cout << "All food = " << all_food << endl;
 	cout << "Peoples = " << peoples.size() << endl;
+	for (People people : peoples)
+		cout << setw(2) << static_cast<char>(toupper(people.get_gender()[0])) << "  ";
+	cout << endl;
 	for (People people : peoples) {
-		cout << people.get_age() << " ";
+		cout << setw(2) << people.get_age() << "  ";
 	}
 	cout << endl;
 }
@@ -171,10 +188,7 @@ void show_information(int year, int all_food, vector<People> peoples) {
 int main() {
 	srand(time(0));
 	int n, m;
-	cout << "Enter food reserve (n):\n";
-	cin >> n;
-	cout << "Enter food purchase (m):\n";
-	cin >> m;
+	read_data(n, m);
 	vector<People> peoples;
 	peoples.push_back(People("male", 1));
 	peoples.push_back(People("female", 1));
@@ -183,9 +197,7 @@ int main() {
 	bool end = false;
 	int year = 1;
 	while (!end) {
-		peoples = check_death(peoples);
-		peoples = check_food(all_food, peoples);
-		peoples = check_offspring(peoples);
+		check_conditions(all_food, peoples);
 		show_information(year, all_food, peoples);
 		increase(peoples);
 		year++;
@@ -193,12 +205,15 @@ int main() {
 		if (!DEBUG) {
 			system("pause");
 			system("cls");
+			if (peoples.empty())
+				end = true;
 		}
 		else {
-			if (year > 16)
+			if (year > 16 || peoples.empty())
 				end = true;
 		}
 	}
+	cout << "The population lived for " << --year << " years\n";
 
 
 	return 0;
