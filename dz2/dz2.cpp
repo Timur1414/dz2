@@ -77,6 +77,11 @@ public:
 	}
 };
 
+People create_people() {
+	string gender = ((rand() % 2) == 0 ? "male" : "female");
+	return People(gender, 1);
+}
+
 
 vector<People> check_death(vector<People> peoples) {
 	vector<People> new_peoples;
@@ -135,7 +140,12 @@ vector<pair<People, People>> create_pairs(vector<People> peoples) {
 
 
 vector<People> check_offspring(vector<People> peoples) {
-
+	vector<People> new_peoples = peoples;
+	vector<pair<People, People>> pairs = create_pairs(peoples);
+	for (size_t i = 0; i < pairs.size(); i++)
+		if ((rand() % 100) >= min(pairs[i].first.get_offspring_probability(), pairs[i].second.get_offspring_probability()))
+			new_peoples.push_back(create_people());
+	return new_peoples;
 }
 
 
@@ -175,7 +185,7 @@ int main() {
 	while (!end) {
 		peoples = check_death(peoples);
 		peoples = check_food(all_food, peoples);
-
+		peoples = check_offspring(peoples);
 		show_information(year, all_food, peoples);
 		increase(peoples);
 		year++;
