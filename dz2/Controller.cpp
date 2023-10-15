@@ -9,14 +9,21 @@ Controller::Controller(Model* model) {
 
 void Controller::start(int n, int m) {
 	model->start(n, m);
+	std::ofstream file("log.txt");
+	file.close();
 	if (!model->get_constants().get_debug())
 		system("cls");
 }
 
 void Controller::check_conditions() {
+	size_t size = model->get_peoples().size();
 	model->check_death();
+	size_t size_after_death = model->get_peoples().size();
 	model->check_food();
+	size_t size_after_eat = model->get_peoples().size();
 	model->check_offspring();
+	size_t size_after_born = model->get_peoples().size();
+	logging(model->get_year(), size, size_after_death, size_after_eat, size_after_born);
 }
 
 bool Controller::check_end() {
@@ -52,4 +59,12 @@ void Controller::postscript() {
 		if (model->get_peoples().empty())
 			model->set_end(true);
 	}
+}
+
+void Controller::logging(int year, size_t size, size_t size_after_death, size_t size_after_eat, size_t size_after_born) {
+	std::ofstream file("log.txt", std::ios::app);
+	file << "В " << year << " году умерло (от старости): " << size - size_after_death 
+		<< " умерло (от голода): " << size_after_death - size_after_eat 
+		<< " родилось: " << size_after_born - size_after_eat << std::endl;
+	file.close();
 }

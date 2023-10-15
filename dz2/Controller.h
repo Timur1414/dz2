@@ -1,6 +1,7 @@
 #pragma once
 #include "Model.h"
 #include <map>
+#include <fstream>
 
 
 class Controller {
@@ -18,4 +19,5 @@ public:
 	int get_all_food();
 	void new_year();
 	void postscript();
+	void logging(int year, size_t size, size_t size_after_death, size_t size_after_eat, size_t size_after_born);
 };
