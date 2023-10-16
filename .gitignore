@@ -2,11 +2,11 @@
 # Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/dz2
-*.sln
-*.user
-*.filters
-*.vcxproj
-/dz2/x64/Debug
+/dz2.sln
 /x64/Debug
+/.vs/dz2
+/dz2/x64/Debug
+/dz2/dz2.vcxproj.filters
+/dz2/dz2.vcxproj
 /dz2/log.txt
+/dz2/dz2.vcxproj.user
