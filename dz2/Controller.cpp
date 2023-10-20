@@ -7,11 +7,15 @@ Controller::Controller(Model* model) {
 	this->model = model;
 }
 
-void Controller::start(int n, int m) {
+void Controller::start(int n, int m, std::vector<int> arguments) {
+	model->get_constants()->set_arguments(arguments);
 	model->start(n, m);
 	std::ofstream file("log.txt");
+	file << "CONST_DIE=" << model->get_constants()->get_const_die() << "  "
+		<< "CONST_BORN=" << model->get_constants()->get_const_born() << "  "
+		<< "CONST_EAT=" << model->get_constants()->get_const_eat() << std::endl;
 	file.close();
-	if (!model->get_constants().get_debug())
+	if (!model->get_constants()->get_debug())
 		system("cls");
 }
 
@@ -49,7 +53,7 @@ void Controller::new_year() {
 }
 
 void Controller::postscript() {
-	if (model->get_constants().get_debug()) {
+	if (model->get_constants()->get_debug()) {
 		if (model->get_peoples().empty() || model->get_year() > 16)
 			model->set_end(true);
 	}
@@ -62,9 +66,20 @@ void Controller::postscript() {
 }
 
 void Controller::logging(int year, size_t size, size_t size_after_death, size_t size_after_eat, size_t size_after_born) {
+	std::pair<int, int> male_and_female_count = model->get_male_and_female_count();
 	std::ofstream file("log.txt", std::ios::app);
-	file << "В " << year << " году умерло (от старости): " << size - size_after_death 
+	file << "В " << std::setw(2) << year << " году умерло (от старости): " << size - size_after_death 
 		<< " умерло (от голода): " << size_after_death - size_after_eat 
-		<< " родилось: " << size_after_born - size_after_eat << std::endl;
+		<< " родилось: " << size_after_born - size_after_eat
+		<< "       Male: " << std::setw(2) << male_and_female_count.first << "     Female: " << std::setw(2) << male_and_female_count.second << std::endl;
 	file.close();
+}
+
+void Controller::error_arguments() {
+	model->set_valide(false);
+	model->set_end(true);
+}
+
+bool Controller::check_valide() {
+	return model->get_valide();
 }

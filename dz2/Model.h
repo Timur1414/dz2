@@ -14,16 +14,22 @@ private:
 public:
 	Constants();
 	Constants(int const_die, int const_born, int const_eat, bool debug);
+	Constants(std::vector<int> arg);
 
+	void set_arguments(std::vector<int> arg);
 	int get_const_die();
 	int get_const_born();
 	int get_const_eat();
+	void set_const_die(int const_die);
+	void set_const_born(int const_born);
+	void set_const_eat(int const_eat);
+	void set_debug(bool debug);
 	bool get_debug();
 };
 
 class People {
 private:
-	Constants constants;
+	Constants* constants;
 	std::string gender;
 	int age;
 	int death_probability;
@@ -31,7 +37,7 @@ private:
 	int food_consumption;
 public:
 	People();
-	People(std::string gender, int age, Constants constants);
+	People(std::string gender, int age, Constants* constants);
 	std::string get_gender();
 	int get_age();
 	int get_death_probability();
@@ -44,23 +50,26 @@ public:
 
 class Model {
 private:
-	Constants constants;
+	Constants* constants;
 	std::vector<People> peoples;
 	int n, m;
 	int all_food;
 	bool end = false;
 	int year = 1;
+	bool valide = true;
 public:
 	Model();
-	Model(Constants constants);
+	Model(Constants* constants);
 
-	Constants get_constants();
+	Constants* get_constants();
 	std::vector<People> get_peoples();
 	int get_all_food();
 	bool get_end();
 	int get_year();
 	void set_peoples(std::vector<People> peoples);
 	void set_end(bool end);
+	void set_valide(bool valide);
+	bool get_valide();
 
 	People create_people();
 	void check_death();
@@ -73,4 +82,5 @@ public:
 	void start(int n, int m);
 	void increase_year();
 	void increase_food();
+	std::pair<int, int> get_male_and_female_count();
 };

@@ -9,7 +9,7 @@ People::People() {
 	food_consumption = -1;
 }
 
-People::People(std::string gender, int age, Constants constants) {
+People::People(std::string gender, int age, Constants* constants) {
 	this->gender = gender;
 	this->age = age;
 	this->constants = constants;
@@ -42,17 +42,17 @@ void People::update_probability() {
 	else if (age > 15)
 		death_probability = 100;
 	else
-		death_probability = constants.get_const_die();
+		death_probability = constants->get_const_die();
 
 	if (age <= 1 || age > 13)
 		offspring_probability = 0;
 	else
-		offspring_probability = constants.get_const_born();
+		offspring_probability = constants->get_const_born();
 
 	if (age <= 1)
 		food_consumption = 0;
 	else
-		food_consumption = constants.get_const_eat();
+		food_consumption = constants->get_const_eat();
 }
 
 void People::increase() {
@@ -75,6 +75,20 @@ Constants::Constants(int const_die, int const_born, int const_eat, bool debug) {
 	DEBUG = debug;
 }
 
+Constants::Constants(std::vector<int> arg) {
+	CONST_DIE = arg[0];
+	CONST_BORN = arg[1];
+	CONST_EAT = arg[2];
+	DEBUG = static_cast<bool>(arg[3]);
+}
+
+void Constants::set_arguments(std::vector<int> arg) {
+	CONST_DIE = arg[0];
+	CONST_BORN = arg[1];
+	CONST_EAT = arg[2];
+	DEBUG = static_cast<bool>(arg[3]);
+}
+
 int Constants::get_const_die() {
 	return CONST_DIE;
 }
@@ -91,14 +105,30 @@ bool Constants::get_debug() {
 	return DEBUG;
 }
 
+void Constants::set_const_die(int const_die) {
+	CONST_DIE = const_die;
+}
+
+void Constants::set_const_born(int const_born) {
+	CONST_BORN = const_born;
+}
+
+void Constants::set_const_eat(int const_eat) {
+	CONST_EAT = const_eat;
+}
+
+void Constants::set_debug(bool debug) {
+	DEBUG = debug;
+}
+
 
 Model::Model() {}
 
-Model::Model(Constants constants) {
+Model::Model(Constants* constants) {
 	this->constants = constants;
 }
 
-Constants Model::get_constants() {
+Constants* Model::get_constants() {
 	return constants;
 }
 
@@ -124,6 +154,14 @@ void Model::set_peoples(std::vector<People> peoples) {
 
 void Model::set_end(bool end) {
 	this->end = end;
+}
+
+void Model::set_valide(bool valide) {
+	this->valide = valide;
+}
+
+bool Model::get_valide() {
+	return valide;
 }
 
 People Model::create_people() {
@@ -211,4 +249,14 @@ void Model::increase_year() {
 
 void Model::increase_food() {
 	all_food += m;
+}
+
+std::pair<int, int> Model::get_male_and_female_count() {
+	int male_count = 0, female_count = 0;
+	for (People i : peoples)
+		if (i.get_gender() == "male")
+			male_count++;
+		else
+			female_count++;
+	return std::make_pair(male_count, female_count);
 }

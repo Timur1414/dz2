@@ -1,6 +1,7 @@
 #pragma once
 #include "Model.h"
 #include <map>
+#include <iomanip>
 #include <fstream>
 
 
@@ -11,7 +12,7 @@ public:
 	Controller();
 	Controller(Model* model);
 
-	void start(int n, int m);
+	void start(int n, int m, std::vector<int> arguments);
 	void check_conditions();
 	bool check_end();
 	std::vector<People> get_peoples();
@@ -20,4 +21,6 @@ public:
 	void new_year();
 	void postscript();
 	void logging(int year, size_t size, size_t size_after_death, size_t size_after_eat, size_t size_after_born);
+	void error_arguments();
+	bool check_valide();
 };

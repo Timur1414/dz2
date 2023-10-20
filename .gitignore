@@ -10,3 +10,5 @@
 /dz2/x64/Debug
 /x64/Debug
 /dz2/log.txt
+*.obj
+/dz2/dz2.exe
