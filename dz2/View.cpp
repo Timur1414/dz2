@@ -6,6 +6,17 @@ View::View(Controller* controller) {
 }
 
 void View::read_data(int argc, char* argv[], Constants* constants) {
+	setlocale(LC_ALL, "ru");
+	std::string tmp(argv[1]);
+	if (argc == 2 && (tmp == "-h" || tmp == "-H" || tmp == "help")) {
+		std::cout << "\nСправка:\nУ программы есть 2 обязательных аргуманта:\n  1) запас еды на начало\n"
+			<< "  2) количество получаемой еды за год\n"
+			<< "3-й необязательный параметр - путь к файлу с константами (по умолчанию \"data.txt\")\n\n"
+			<< "Наполнение файла констант:\n"
+			<< "CONST_DIE=<число>\nCONST_BORN=<число>\nCONST_EAT=<число>\nDEBUG=<false или true>\n" << std::endl;
+		controller->error_arguments();
+		return;
+	}
 	if (argc < 3) {
 		std::cout << "Wrong arguments\n";
 		controller->error_arguments();
@@ -41,8 +52,15 @@ void View::read_data(int argc, char* argv[], Constants* constants) {
 		controller->error_arguments();
 		return;
 	}
-	n = std::stoi(argv[1]);
-	m = std::stoi(argv[2]);
+	try {
+		n = std::stoi(argv[1]);
+		m = std::stoi(argv[2]);
+	}
+	catch (std::invalid_argument) {
+		std::cout << "Wrong arguments\n";
+		controller->error_arguments();
+		return;
+	}
 	start(arguments);
 }
 
