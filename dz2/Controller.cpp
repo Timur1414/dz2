@@ -54,7 +54,7 @@ void Controller::new_year() {
 
 void Controller::postscript() {
 	if (model->get_constants()->get_debug()) {
-		if (model->get_peoples().empty() || model->get_year() > 16)
+		if (model->get_peoples().empty() || model->get_year() > 160)
 			model->set_end(true);
 	}
 	else {

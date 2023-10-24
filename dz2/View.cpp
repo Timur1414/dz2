@@ -7,6 +7,11 @@ View::View(Controller* controller) {
 
 void View::read_data(int argc, char* argv[], Constants* constants) {
 	setlocale(LC_ALL, "ru");
+	if (argc == 1) {
+		std::cout << "Wrong arguments\n";
+		controller->error_arguments();
+		return;
+	}
 	std::string tmp(argv[1]);
 	if (argc == 2 && (tmp == "-h" || tmp == "-H" || tmp == "help")) {
 		std::cout << "\nСправка:\nУ программы есть 2 обязательных аргуманта:\n  1) запас еды на начало\n"
